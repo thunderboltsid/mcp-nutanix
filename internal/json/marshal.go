@@ -14,7 +14,6 @@ import (
 // spec and status are duplicative info and hence status can be removed.
 var DefaultStripPaths = []string{
 	"api_version",
-	"entities[].status",
 	"spec.resources.guest_customization",
 	"entities[].spec.resources.guest_customization",
 }
