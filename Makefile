@@ -11,3 +11,15 @@ build:
 # Clean build artifacts
 clean:
 	rm -rf bin/
+
+install:
+	go install golang.org/x/tools/cmd/goimports@latest
+
+# Generate resource and tool implementations
+generate:
+	# Copy the main.go file to cmd/codegen if it doesn't exist
+	go run pkg/codegen/cmd/main.go --output .
+	goimports -w ./pkg/resources
+	goimports -w ./pkg/tools
+	go mod tidy
+	@echo "Generation complete!"
