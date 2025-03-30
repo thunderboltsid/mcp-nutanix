@@ -6,7 +6,7 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/thunderboltsid/mcp-nutanix/pkg/codegen/templates"
+	"github.com/thunderboltsid/mcp-nutanix/internal/codegen/templates"
 )
 
 func main() {
