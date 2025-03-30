@@ -2,12 +2,12 @@ package main
 
 import (
 	"fmt"
+	"github.com/mark3labs/mcp-go/mcp"
 
 	"github.com/thunderboltsid/mcp-nutanix/pkg/prompts"
 	"github.com/thunderboltsid/mcp-nutanix/pkg/resources"
 	"github.com/thunderboltsid/mcp-nutanix/pkg/tools"
 
-	"github.com/mark3labs/mcp-go/mcp"
 	"github.com/mark3labs/mcp-go/server"
 )
 

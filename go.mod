@@ -3,7 +3,7 @@ module github.com/thunderboltsid/mcp-nutanix
 go 1.23.7
 
 require (
-	github.com/mark3labs/mcp-go v0.17.0
+	github.com/mark3labs/mcp-go v0.17.1-0.20250329140527-051cda5533c7
 	github.com/nutanix-cloud-native/prism-go-client v0.5.2-0.20250327201106-73aeef0a6292
 	k8s.io/klog v1.0.0
 )
