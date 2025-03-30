@@ -12,27 +12,6 @@ import (
 	"github.com/mark3labs/mcp-go/server"
 )
 
-// extractIDFromURI extracts the UUID from a URI
-// it uses regex to extract the UUID from the URI
-// uri is expected to be in the format of resourceType://uuid or resourceType://name
-func extractIDFromURI(uri string) string {
-	parts := strings.Split(uri, "://")
-	if len(parts) != 2 {
-		return ""
-	}
-	return parts[1]
-}
-
-// extractTypeFromURI extracts the resource type from a URI
-// uri is expected to be in the format of resourceType://uuid or resourceType://name
-func extractTypeFromURI(uri string) string {
-	parts := strings.Split(uri, "://")
-	if len(parts) != 2 {
-		return ""
-	}
-	return parts[0]
-}
-
 // ResourceType enum for different resource types
 type ResourceType string
 
@@ -114,11 +93,8 @@ func CreateResourceHandler(resourceType ResourceType, handlerFunc ResourceHandle
 		}
 
 		// Convert to JSON
-		dljson := json.DepthLimitedJSON{
-			Value:    resource,
-			MaxDepth: 4,
-		}
-		jsonBytes, err := dljson.MarshalJSON()
+		cjson := json.NewCustomJSONEncoder(resource)
+		jsonBytes, err := cjson.MarshalJSON()
 		if err != nil {
 			return nil, fmt.Errorf("failed to marshal %s details: %w", resourceType, err)
 		}
@@ -131,19 +107,4 @@ func CreateResourceHandler(resourceType ResourceType, handlerFunc ResourceHandle
 			},
 		}, nil
 	}
-}
-
-// SplitNameValue splits a "name=value" string into its components
-func SplitNameValue(nameValue string) (string, string) {
-	parts := strings.SplitN(nameValue, "=", 2)
-	if len(parts) != 2 {
-		return nameValue, ""
-	}
-	return parts[0], parts[1]
-}
-
-// FormatFilterString formats filter strings for API queries
-// Example: FormatFilterString("name", "test") returns "name==test"
-func FormatFilterString(field, value string) string {
-	return fmt.Sprintf("%s==%s", field, value)
 }

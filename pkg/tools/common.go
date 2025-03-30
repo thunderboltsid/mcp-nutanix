@@ -37,11 +37,8 @@ func CreateToolHandler(
 		}
 
 		// Convert to JSON
-		dljson := json.DepthLimitedJSON{
-			Value:    resp,
-			MaxDepth: 4,
-		}
-		jsonBytes, err := dljson.MarshalJSON()
+		cjson := json.NewCustomJSONEncoder(resp)
+		jsonBytes, err := cjson.MarshalJSON()
 		if err != nil {
 			return nil, fmt.Errorf("failed to marshal %s: %w", resourceType, err)
 		}
