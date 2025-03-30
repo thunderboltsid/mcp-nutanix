@@ -16,6 +16,7 @@ var DefaultStripPaths = []string{
 	"api_version",
 	"spec.resources.guest_customization",
 	"entities[].spec.resources.guest_customization",
+	"entities[].status.resources.guest_customization",
 }
 
 func stripProperties(data []byte, paths []string) ([]byte, error) {
