@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/thunderboltsid/mcp-nutanix/internal/client"
 	"github.com/thunderboltsid/mcp-nutanix/internal/json"
-	"github.com/thunderboltsid/mcp-nutanix/pkg/client"
 
 	"github.com/mark3labs/mcp-go/mcp"
 	"github.com/mark3labs/mcp-go/server"

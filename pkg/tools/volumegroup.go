@@ -4,7 +4,7 @@ import (
 	"context"
 
 	v3 "github.com/nutanix-cloud-native/prism-go-client/v3"
-	"github.com/thunderboltsid/mcp-nutanix/pkg/client"
+	"github.com/thunderboltsid/mcp-nutanix/internal/client"
 	"github.com/thunderboltsid/mcp-nutanix/pkg/resources"
 
 	"github.com/mark3labs/mcp-go/mcp"

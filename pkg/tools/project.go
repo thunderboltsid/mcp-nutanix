@@ -3,7 +3,7 @@ package tools
 import (
 	"context"
 
-	"github.com/thunderboltsid/mcp-nutanix/pkg/client"
+	"github.com/thunderboltsid/mcp-nutanix/internal/client"
 	"github.com/thunderboltsid/mcp-nutanix/pkg/resources"
 
 	"github.com/mark3labs/mcp-go/mcp"
