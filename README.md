@@ -90,10 +90,10 @@ The LLM will receive detailed JSON information about the specific resource.
 mcp-nutanix/
 ├── bin/                  # Compiled binaries
 ├── internal/             # Internal packages
-│   └── json/             # JSON helpers
-├── pkg/                  # components
 │   ├── client/           # Prism Central client handling
 │   ├── codegen/          # Code generation utilities
+│   └── json/             # JSON helpers
+├── pkg/                  # components
 │   ├── prompts/          # MCP prompt implementations
 │   ├── resources/        # Resource handlers
 │   └── tools/            # Tool handlers
