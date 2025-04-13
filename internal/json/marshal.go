@@ -78,14 +78,33 @@ type CustomJSON struct {
 	StripPaths []string
 }
 
-func NewCustomJSONEncoder(value any) *CustomJSON {
+type RegularJSON struct {
+	Value interface{}
+}
+
+func CustomJSONEncoder(value any) *CustomJSON {
 	return &CustomJSON{
 		Value:      value,
 		StripPaths: DefaultStripPaths,
 	}
 }
 
-func (d CustomJSON) MarshalJSON() ([]byte, error) {
+func RegularJSONEncoder(value any) *RegularJSON {
+	return &RegularJSON{
+		Value: value,
+	}
+}
+
+func (r *RegularJSON) MarshalJSON() ([]byte, error) {
+	data, err := json.Marshal(r.Value)
+	if err != nil {
+		return nil, err
+	}
+
+	return data, nil
+}
+
+func (d *CustomJSON) MarshalJSON() ([]byte, error) {
 	data, err := json.Marshal(d.Value)
 	if err != nil {
 		return nil, err

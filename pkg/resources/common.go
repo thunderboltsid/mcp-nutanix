@@ -93,7 +93,7 @@ func CreateResourceHandler(resourceType ResourceType, handlerFunc ResourceHandle
 		}
 
 		// Convert to JSON
-		cjson := json.NewCustomJSONEncoder(resource)
+		cjson := json.CustomJSONEncoder(resource)
 		jsonBytes, err := cjson.MarshalJSON()
 		if err != nil {
 			return nil, fmt.Errorf("failed to marshal %s details: %w", resourceType, err)

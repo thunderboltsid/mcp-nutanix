@@ -12,10 +12,15 @@ import (
 	"github.com/mark3labs/mcp-go/server"
 )
 
-// ResourceRegistration represents a resource and tool pairing
+// ToolRegistration holds a tool function and its handler
+type ToolRegistration struct {
+	Func    func() mcp.Tool
+	Handler server.ToolHandlerFunc
+}
+
+// ResourceRegistration represents a resource and its associated tools
 type ResourceRegistration struct {
-	ToolFunc        func() mcp.Tool
-	ToolHandler     server.ToolHandlerFunc
+	Tools           []ToolRegistration
 	ResourceFunc    func() mcp.ResourceTemplate
 	ResourceHandler server.ResourceTemplateHandlerFunc
 }
@@ -66,116 +71,268 @@ func main() {
 	// Define all resources and tools
 	resourceRegistrations := map[string]ResourceRegistration{
 		"vm": {
-			ToolFunc:        tools.VM,
-			ToolHandler:     tools.VMHandler(),
+			Tools: []ToolRegistration{
+				{
+					Func:    tools.VMList,
+					Handler: tools.VMListHandler(),
+				},
+				{
+					Func:    tools.VMCount,
+					Handler: tools.VMCountHandler(),
+				},
+			},
 			ResourceFunc:    resources.VM,
 			ResourceHandler: resources.VMHandler(),
 		},
 		"cluster": {
-			ToolFunc:        tools.Cluster,
-			ToolHandler:     tools.ClusterHandler(),
+			Tools: []ToolRegistration{
+				{
+					Func:    tools.ClusterList,
+					Handler: tools.ClusterListHandler(),
+				},
+				{
+					Func:    tools.ClusterCount,
+					Handler: tools.ClusterCountHandler(),
+				},
+			},
 			ResourceFunc:    resources.Cluster,
 			ResourceHandler: resources.ClusterHandler(),
 		},
 		"host": {
-			ToolFunc:        tools.Host,
-			ToolHandler:     tools.HostHandler(),
+			Tools: []ToolRegistration{
+				{
+					Func:    tools.HostList,
+					Handler: tools.HostListHandler(),
+				},
+				{
+					Func:    tools.HostCount,
+					Handler: tools.HostCountHandler(),
+				},
+			},
 			ResourceFunc:    resources.Host,
 			ResourceHandler: resources.HostHandler(),
 		},
 		"image": {
-			ToolFunc:        tools.Image,
-			ToolHandler:     tools.ImageHandler(),
+			Tools: []ToolRegistration{
+				{
+					Func:    tools.ImageList,
+					Handler: tools.ImageListHandler(),
+				},
+				{
+					Func:    tools.ImageCount,
+					Handler: tools.ImageCountHandler(),
+				},
+			},
 			ResourceFunc:    resources.Image,
 			ResourceHandler: resources.ImageHandler(),
 		},
 		"subnet": {
-			ToolFunc:        tools.Subnet,
-			ToolHandler:     tools.SubnetHandler(),
+			Tools: []ToolRegistration{
+				{
+					Func:    tools.SubnetList,
+					Handler: tools.SubnetListHandler(),
+				},
+				{
+					Func:    tools.SubnetCount,
+					Handler: tools.SubnetCountHandler(),
+				},
+			},
 			ResourceFunc:    resources.Subnet,
 			ResourceHandler: resources.SubnetHandler(),
 		},
 		"project": {
-			ToolFunc:        tools.Project,
-			ToolHandler:     tools.ProjectHandler(),
+			Tools: []ToolRegistration{
+				{
+					Func:    tools.ProjectList,
+					Handler: tools.ProjectListHandler(),
+				},
+				{
+					Func:    tools.ProjectCount,
+					Handler: tools.ProjectCountHandler(),
+				},
+			},
 			ResourceFunc:    resources.Project,
 			ResourceHandler: resources.ProjectHandler(),
 		},
 		"volumegroup": {
-			ToolFunc:        tools.VolumeGroup,
-			ToolHandler:     tools.VolumeGroupHandler(),
+			Tools: []ToolRegistration{
+				{
+					Func:    tools.VolumeGroupList,
+					Handler: tools.VolumeGroupListHandler(),
+				},
+				{
+					Func:    tools.VolumeGroupCount,
+					Handler: tools.VolumeGroupCountHandler(),
+				},
+			},
 			ResourceFunc:    resources.VolumeGroup,
 			ResourceHandler: resources.VolumeGroupHandler(),
 		},
 		"networksecurityrule": {
-			ToolFunc:        tools.NetworkSecurityRule,
-			ToolHandler:     tools.NetworkSecurityRuleHandler(),
+			Tools: []ToolRegistration{
+				{
+					Func:    tools.NetworkSecurityRuleList,
+					Handler: tools.NetworkSecurityRuleListHandler(),
+				},
+				{
+					Func:    tools.NetworkSecurityRuleCount,
+					Handler: tools.NetworkSecurityRuleCountHandler(),
+				},
+			},
 			ResourceFunc:    resources.NetworkSecurityRule,
 			ResourceHandler: resources.NetworkSecurityRuleHandler(),
 		},
 		"category": {
-			ToolFunc:        tools.Category,
-			ToolHandler:     tools.CategoryHandler(),
+			Tools: []ToolRegistration{
+				{
+					Func:    tools.CategoryList,
+					Handler: tools.CategoryListHandler(),
+				},
+				{
+					Func:    tools.CategoryCount,
+					Handler: tools.CategoryCountHandler(),
+				},
+			},
 			ResourceFunc:    resources.Category,
 			ResourceHandler: resources.CategoryHandler(),
 		},
 		"accesscontrolpolicy": {
-			ToolFunc:        tools.AccessControlPolicy,
-			ToolHandler:     tools.AccessControlPolicyHandler(),
+			Tools: []ToolRegistration{
+				{
+					Func:    tools.AccessControlPolicyList,
+					Handler: tools.AccessControlPolicyListHandler(),
+				},
+				{
+					Func:    tools.AccessControlPolicyCount,
+					Handler: tools.AccessControlPolicyCountHandler(),
+				},
+			},
 			ResourceFunc:    resources.AccessControlPolicy,
 			ResourceHandler: resources.AccessControlPolicyHandler(),
 		},
 		"role": {
-			ToolFunc:        tools.Role,
-			ToolHandler:     tools.RoleHandler(),
+			Tools: []ToolRegistration{
+				{
+					Func:    tools.RoleList,
+					Handler: tools.RoleListHandler(),
+				},
+				{
+					Func:    tools.RoleCount,
+					Handler: tools.RoleCountHandler(),
+				},
+			},
 			ResourceFunc:    resources.Role,
 			ResourceHandler: resources.RoleHandler(),
 		},
 		"user": {
-			ToolFunc:        tools.User,
-			ToolHandler:     tools.UserHandler(),
+			Tools: []ToolRegistration{
+				{
+					Func:    tools.UserList,
+					Handler: tools.UserListHandler(),
+				},
+				{
+					Func:    tools.UserCount,
+					Handler: tools.UserCountHandler(),
+				},
+			},
 			ResourceFunc:    resources.User,
 			ResourceHandler: resources.UserHandler(),
 		},
 		"usergroup": {
-			ToolFunc:        tools.UserGroup,
-			ToolHandler:     tools.UserGroupHandler(),
+			Tools: []ToolRegistration{
+				{
+					Func:    tools.UserGroupList,
+					Handler: tools.UserGroupListHandler(),
+				},
+				{
+					Func:    tools.UserGroupCount,
+					Handler: tools.UserGroupCountHandler(),
+				},
+			},
 			ResourceFunc:    resources.UserGroup,
 			ResourceHandler: resources.UserGroupHandler(),
 		},
 		"permission": {
-			ToolFunc:        tools.Permission,
-			ToolHandler:     tools.PermissionHandler(),
+			Tools: []ToolRegistration{
+				{
+					Func:    tools.PermissionList,
+					Handler: tools.PermissionListHandler(),
+				},
+				{
+					Func:    tools.PermissionCount,
+					Handler: tools.PermissionCountHandler(),
+				},
+			},
 			ResourceFunc:    resources.Permission,
 			ResourceHandler: resources.PermissionHandler(),
 		},
 		"protectionrule": {
-			ToolFunc:        tools.ProtectionRule,
-			ToolHandler:     tools.ProtectionRuleHandler(),
+			Tools: []ToolRegistration{
+				{
+					Func:    tools.ProtectionRuleList,
+					Handler: tools.ProtectionRuleListHandler(),
+				},
+				{
+					Func:    tools.ProtectionRuleCount,
+					Handler: tools.ProtectionRuleCountHandler(),
+				},
+			},
 			ResourceFunc:    resources.ProtectionRule,
 			ResourceHandler: resources.ProtectionRuleHandler(),
 		},
 		"recoveryplan": {
-			ToolFunc:        tools.RecoveryPlan,
-			ToolHandler:     tools.RecoveryPlanHandler(),
+			Tools: []ToolRegistration{
+				{
+					Func:    tools.RecoveryPlanList,
+					Handler: tools.RecoveryPlanListHandler(),
+				},
+				{
+					Func:    tools.RecoveryPlanCount,
+					Handler: tools.RecoveryPlanCountHandler(),
+				},
+			},
 			ResourceFunc:    resources.RecoveryPlan,
 			ResourceHandler: resources.RecoveryPlanHandler(),
 		},
 		"servicegroup": {
-			ToolFunc:        tools.ServiceGroup,
-			ToolHandler:     tools.ServiceGroupHandler(),
+			Tools: []ToolRegistration{
+				{
+					Func:    tools.ServiceGroupList,
+					Handler: tools.ServiceGroupListHandler(),
+				},
+				{
+					Func:    tools.ServiceGroupCount,
+					Handler: tools.ServiceGroupCountHandler(),
+				},
+			},
 			ResourceFunc:    resources.ServiceGroup,
 			ResourceHandler: resources.ServiceGroupHandler(),
 		},
 		"addressgroup": {
-			ToolFunc:        tools.AddressGroup,
-			ToolHandler:     tools.AddressGroupHandler(),
+			Tools: []ToolRegistration{
+				{
+					Func:    tools.AddressGroupList,
+					Handler: tools.AddressGroupListHandler(),
+				},
+				{
+					Func:    tools.AddressGroupCount,
+					Handler: tools.AddressGroupCountHandler(),
+				},
+			},
 			ResourceFunc:    resources.AddressGroup,
 			ResourceHandler: resources.AddressGroupHandler(),
 		},
 		"recoveryplanjob": {
-			ToolFunc:        tools.RecoveryPlanJob,
-			ToolHandler:     tools.RecoveryPlanJobHandler(),
+			Tools: []ToolRegistration{
+				{
+					Func:    tools.RecoveryPlanJobList,
+					Handler: tools.RecoveryPlanJobListHandler(),
+				},
+				{
+					Func:    tools.RecoveryPlanJobCount,
+					Handler: tools.RecoveryPlanJobCountHandler(),
+				},
+			},
 			ResourceFunc:    resources.RecoveryPlanJob,
 			ResourceHandler: resources.RecoveryPlanJobHandler(),
 		},
@@ -183,15 +340,16 @@ func main() {
 
 	// Register all tools and resources
 	for name, registration := range resourceRegistrations {
-		// Add the tool
-		s.AddTool(registration.ToolFunc(), registration.ToolHandler)
+		// Add all tools
+		for _, tool := range registration.Tools {
+			s.AddTool(tool.Func(), tool.Handler)
+			if debugMode {
+				fmt.Printf("Registered %s resource and tool\n", name)
+			}
+		}
 
 		// Add the resource
 		s.AddResourceTemplate(registration.ResourceFunc(), registration.ResourceHandler)
-
-		if debugMode {
-			fmt.Printf("Registered %s resource and tool\n", name)
-		}
 	}
 
 	// Start the server

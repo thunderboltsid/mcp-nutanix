@@ -23,18 +23,18 @@ import (
 )
 
 // {{.Name}} defines the {{.Name}} tool
-func {{.Name}}() mcp.Tool {
-    return mcp.NewTool("{{.ResourceType}}s",
+func {{.Name}}List() mcp.Tool {
+    return mcp.NewTool("{{.ResourceType}}_list",
         mcp.WithDescription("List {{.ResourceType}} resources"),
         mcp.WithString("filter",
-            mcp.Description("Optional text filter (interpreted by LLM)"),
+           mcp.Description("Optional text filter (interpreted by LLM)"),
         ),
     )
 }
 
-// {{.Name}}Handler implements the handler for the {{.Name}} tool
-func {{.Name}}Handler() server.ToolHandlerFunc {
-    return CreateToolHandler(
+// {{.Name}}ListHandler implements the handler for the {{.Name}} list tool
+func {{.Name}}ListHandler() server.ToolHandlerFunc {
+    return CreateListToolHandler(
         resources.ResourceType{{.Name}},
         // Define the ListResourceFunc implementation
         func(ctx context.Context, client *client.NutanixClient, filter string) (interface{}, error) {
@@ -46,24 +46,68 @@ func {{.Name}}Handler() server.ToolHandlerFunc {
             return client.V3().{{.ClientListAllFunc}}(ctx, "", nil)
             {{else if eq .Name "Category"}}
             // Special case for Category which takes CategoryListMetadata
-            var length int64 = 100
-            metadata := &v3.CategoryListMetadata{
-                Length: &length,
-            }
+            metadata := &v3.CategoryListMetadata{}
             return client.V3().{{.ClientListFunc}}(ctx, metadata)
             {{else if .HasListAllFunc}}
             // Use ListAll function to get all resources
             return client.V3().{{.ClientListAllFunc}}(ctx, "")
             {{else}}
             // Create DSMetadata without filter
-            var length int64 = 100
-            metadata := &v3.DSMetadata{
-                Length: &length,
-            }
+            metadata := &v3.DSMetadata{}
             
             return client.V3().{{.ClientListFunc}}(ctx, metadata)
             {{end}}
         },
+    )
+}
+
+// {{.Name}}Count defines the {{.Name}} count tool
+func {{.Name}}Count() mcp.Tool {
+    return mcp.NewTool("{{.ResourceType}}_count",
+        mcp.WithDescription("Count {{.ResourceType}} resources"),
+        mcp.WithString("filter",
+           mcp.Description("Optional text filter (interpreted by LLM)"),
+        ),
+    )
+}
+
+// {{.Name}}CountHandler implements the handler for the {{.Name}} count tool
+func {{.Name}}CountHandler() server.ToolHandlerFunc {
+    return CreateCountToolHandler(
+        resources.ResourceType{{.Name}},
+        // Define the ListResourceFunc implementation
+        func(ctx context.Context, client *client.NutanixClient, filter string) (interface{}, error) {
+            {{if eq .Name "Host"}}
+            // Special case for Host which doesn't take a filter
+            resp, err := client.V3().{{.ClientListAllFunc}}(ctx)
+            {{else if eq .Name "Subnet"}}
+            // Special case for Subnet which has an extra parameter
+            resp, err := client.V3().{{.ClientListAllFunc}}(ctx, "", nil)
+            {{else if eq .Name "Category"}}
+            // Special case for Category which takes CategoryListMetadata
+            metadata := &v3.CategoryListMetadata{}
+            resp, err := client.V3().{{.ClientListFunc}}(ctx, metadata)
+            {{else if .HasListAllFunc}}
+            // Use ListAll function to get all resources
+            resp, err := client.V3().{{.ClientListAllFunc}}(ctx, "")
+            {{else}}
+            // Create DSMetadata without filter
+            metadata := &v3.DSMetadata{}
+            
+            resp, err := client.V3().{{.ClientListFunc}}(ctx, metadata)
+            {{end}}
+            if err != nil {
+				return nil, err
+			}
+
+			res := map[string]interface{}{
+				"resource_type": "{{.Name}}",
+				"count": len(resp.Entities),
+				"metadata": resp.Metadata,
+        	}
+
+			return res, nil
+		},
     )
 }
 `

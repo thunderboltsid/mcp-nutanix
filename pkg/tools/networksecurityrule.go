@@ -11,8 +11,8 @@ import (
 )
 
 // NetworkSecurityRule defines the NetworkSecurityRule tool
-func NetworkSecurityRule() mcp.Tool {
-	return mcp.NewTool("networksecurityrules",
+func NetworkSecurityRuleList() mcp.Tool {
+	return mcp.NewTool("networksecurityrule_list",
 		mcp.WithDescription("List networksecurityrule resources"),
 		mcp.WithString("filter",
 			mcp.Description("Optional text filter (interpreted by LLM)"),
@@ -20,9 +20,9 @@ func NetworkSecurityRule() mcp.Tool {
 	)
 }
 
-// NetworkSecurityRuleHandler implements the handler for the NetworkSecurityRule tool
-func NetworkSecurityRuleHandler() server.ToolHandlerFunc {
-	return CreateToolHandler(
+// NetworkSecurityRuleListHandler implements the handler for the NetworkSecurityRule list tool
+func NetworkSecurityRuleListHandler() server.ToolHandlerFunc {
+	return CreateListToolHandler(
 		resources.ResourceTypeNetworkSecurityRule,
 		// Define the ListResourceFunc implementation
 		func(ctx context.Context, client *client.NutanixClient, filter string) (interface{}, error) {
@@ -30,6 +30,41 @@ func NetworkSecurityRuleHandler() server.ToolHandlerFunc {
 			// Use ListAll function to get all resources
 			return client.V3().ListAllNetworkSecurityRule(ctx, "")
 
+		},
+	)
+}
+
+// NetworkSecurityRuleCount defines the NetworkSecurityRule count tool
+func NetworkSecurityRuleCount() mcp.Tool {
+	return mcp.NewTool("networksecurityrule_count",
+		mcp.WithDescription("Count networksecurityrule resources"),
+		mcp.WithString("filter",
+			mcp.Description("Optional text filter (interpreted by LLM)"),
+		),
+	)
+}
+
+// NetworkSecurityRuleCountHandler implements the handler for the NetworkSecurityRule count tool
+func NetworkSecurityRuleCountHandler() server.ToolHandlerFunc {
+	return CreateCountToolHandler(
+		resources.ResourceTypeNetworkSecurityRule,
+		// Define the ListResourceFunc implementation
+		func(ctx context.Context, client *client.NutanixClient, filter string) (interface{}, error) {
+
+			// Use ListAll function to get all resources
+			resp, err := client.V3().ListAllNetworkSecurityRule(ctx, "")
+
+			if err != nil {
+				return nil, err
+			}
+
+			res := map[string]interface{}{
+				"resource_type": "NetworkSecurityRule",
+				"count":         len(resp.Entities),
+				"metadata":      resp.Metadata,
+			}
+
+			return res, nil
 		},
 	)
 }

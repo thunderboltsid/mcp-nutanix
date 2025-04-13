@@ -11,8 +11,8 @@ import (
 )
 
 // User defines the User tool
-func User() mcp.Tool {
-	return mcp.NewTool("users",
+func UserList() mcp.Tool {
+	return mcp.NewTool("user_list",
 		mcp.WithDescription("List user resources"),
 		mcp.WithString("filter",
 			mcp.Description("Optional text filter (interpreted by LLM)"),
@@ -20,9 +20,9 @@ func User() mcp.Tool {
 	)
 }
 
-// UserHandler implements the handler for the User tool
-func UserHandler() server.ToolHandlerFunc {
-	return CreateToolHandler(
+// UserListHandler implements the handler for the User list tool
+func UserListHandler() server.ToolHandlerFunc {
+	return CreateListToolHandler(
 		resources.ResourceTypeUser,
 		// Define the ListResourceFunc implementation
 		func(ctx context.Context, client *client.NutanixClient, filter string) (interface{}, error) {
@@ -30,6 +30,41 @@ func UserHandler() server.ToolHandlerFunc {
 			// Use ListAll function to get all resources
 			return client.V3().ListAllUser(ctx, "")
 
+		},
+	)
+}
+
+// UserCount defines the User count tool
+func UserCount() mcp.Tool {
+	return mcp.NewTool("user_count",
+		mcp.WithDescription("Count user resources"),
+		mcp.WithString("filter",
+			mcp.Description("Optional text filter (interpreted by LLM)"),
+		),
+	)
+}
+
+// UserCountHandler implements the handler for the User count tool
+func UserCountHandler() server.ToolHandlerFunc {
+	return CreateCountToolHandler(
+		resources.ResourceTypeUser,
+		// Define the ListResourceFunc implementation
+		func(ctx context.Context, client *client.NutanixClient, filter string) (interface{}, error) {
+
+			// Use ListAll function to get all resources
+			resp, err := client.V3().ListAllUser(ctx, "")
+
+			if err != nil {
+				return nil, err
+			}
+
+			res := map[string]interface{}{
+				"resource_type": "User",
+				"count":         len(resp.Entities),
+				"metadata":      resp.Metadata,
+			}
+
+			return res, nil
 		},
 	)
 }

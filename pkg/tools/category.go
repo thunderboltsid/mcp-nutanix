@@ -12,8 +12,8 @@ import (
 )
 
 // Category defines the Category tool
-func Category() mcp.Tool {
-	return mcp.NewTool("categorys",
+func CategoryList() mcp.Tool {
+	return mcp.NewTool("category_list",
 		mcp.WithDescription("List category resources"),
 		mcp.WithString("filter",
 			mcp.Description("Optional text filter (interpreted by LLM)"),
@@ -21,20 +21,53 @@ func Category() mcp.Tool {
 	)
 }
 
-// CategoryHandler implements the handler for the Category tool
-func CategoryHandler() server.ToolHandlerFunc {
-	return CreateToolHandler(
+// CategoryListHandler implements the handler for the Category list tool
+func CategoryListHandler() server.ToolHandlerFunc {
+	return CreateListToolHandler(
 		resources.ResourceTypeCategory,
 		// Define the ListResourceFunc implementation
 		func(ctx context.Context, client *client.NutanixClient, filter string) (interface{}, error) {
 
 			// Special case for Category which takes CategoryListMetadata
-			var length int64 = 100
-			metadata := &v3.CategoryListMetadata{
-				Length: &length,
-			}
+			metadata := &v3.CategoryListMetadata{}
 			return client.V3().ListCategories(ctx, metadata)
 
+		},
+	)
+}
+
+// CategoryCount defines the Category count tool
+func CategoryCount() mcp.Tool {
+	return mcp.NewTool("category_count",
+		mcp.WithDescription("Count category resources"),
+		mcp.WithString("filter",
+			mcp.Description("Optional text filter (interpreted by LLM)"),
+		),
+	)
+}
+
+// CategoryCountHandler implements the handler for the Category count tool
+func CategoryCountHandler() server.ToolHandlerFunc {
+	return CreateCountToolHandler(
+		resources.ResourceTypeCategory,
+		// Define the ListResourceFunc implementation
+		func(ctx context.Context, client *client.NutanixClient, filter string) (interface{}, error) {
+
+			// Special case for Category which takes CategoryListMetadata
+			metadata := &v3.CategoryListMetadata{}
+			resp, err := client.V3().ListCategories(ctx, metadata)
+
+			if err != nil {
+				return nil, err
+			}
+
+			res := map[string]interface{}{
+				"resource_type": "Category",
+				"count":         len(resp.Entities),
+				"metadata":      resp.Metadata,
+			}
+
+			return res, nil
 		},
 	)
 }

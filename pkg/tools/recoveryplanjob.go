@@ -12,8 +12,8 @@ import (
 )
 
 // RecoveryPlanJob defines the RecoveryPlanJob tool
-func RecoveryPlanJob() mcp.Tool {
-	return mcp.NewTool("recoveryplanjobs",
+func RecoveryPlanJobList() mcp.Tool {
+	return mcp.NewTool("recoveryplanjob_list",
 		mcp.WithDescription("List recoveryplanjob resources"),
 		mcp.WithString("filter",
 			mcp.Description("Optional text filter (interpreted by LLM)"),
@@ -21,21 +21,55 @@ func RecoveryPlanJob() mcp.Tool {
 	)
 }
 
-// RecoveryPlanJobHandler implements the handler for the RecoveryPlanJob tool
-func RecoveryPlanJobHandler() server.ToolHandlerFunc {
-	return CreateToolHandler(
+// RecoveryPlanJobListHandler implements the handler for the RecoveryPlanJob list tool
+func RecoveryPlanJobListHandler() server.ToolHandlerFunc {
+	return CreateListToolHandler(
 		resources.ResourceTypeRecoveryPlanJob,
 		// Define the ListResourceFunc implementation
 		func(ctx context.Context, client *client.NutanixClient, filter string) (interface{}, error) {
 
 			// Create DSMetadata without filter
-			var length int64 = 100
-			metadata := &v3.DSMetadata{
-				Length: &length,
-			}
+			metadata := &v3.DSMetadata{}
 
 			return client.V3().ListRecoveryPlanJobs(ctx, metadata)
 
+		},
+	)
+}
+
+// RecoveryPlanJobCount defines the RecoveryPlanJob count tool
+func RecoveryPlanJobCount() mcp.Tool {
+	return mcp.NewTool("recoveryplanjob_count",
+		mcp.WithDescription("Count recoveryplanjob resources"),
+		mcp.WithString("filter",
+			mcp.Description("Optional text filter (interpreted by LLM)"),
+		),
+	)
+}
+
+// RecoveryPlanJobCountHandler implements the handler for the RecoveryPlanJob count tool
+func RecoveryPlanJobCountHandler() server.ToolHandlerFunc {
+	return CreateCountToolHandler(
+		resources.ResourceTypeRecoveryPlanJob,
+		// Define the ListResourceFunc implementation
+		func(ctx context.Context, client *client.NutanixClient, filter string) (interface{}, error) {
+
+			// Create DSMetadata without filter
+			metadata := &v3.DSMetadata{}
+
+			resp, err := client.V3().ListRecoveryPlanJobs(ctx, metadata)
+
+			if err != nil {
+				return nil, err
+			}
+
+			res := map[string]interface{}{
+				"resource_type": "RecoveryPlanJob",
+				"count":         len(resp.Entities),
+				"metadata":      resp.Metadata,
+			}
+
+			return res, nil
 		},
 	)
 }
