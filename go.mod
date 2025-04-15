@@ -5,7 +5,7 @@ go 1.23.7
 require (
 	github.com/itchyny/gojq v0.12.17
 	github.com/mark3labs/mcp-go v0.17.1-0.20250329140527-051cda5533c7
-	github.com/nutanix-cloud-native/prism-go-client v0.5.2-0.20250327201106-73aeef0a6292
+	github.com/nutanix-cloud-native/prism-go-client v0.5.2-0.20250415200013-f6ab247eefb8
 	github.com/stretchr/testify v1.9.0
 	k8s.io/klog v1.0.0
 )

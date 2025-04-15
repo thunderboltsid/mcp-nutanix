@@ -87,8 +87,8 @@ github.com/mattn/go-isatty v0.0.20 h1:xfD0iDuEKnDkl03q4limB+vH+GxLEtL/jb4xVJSWWE
 github.com/mattn/go-isatty v0.0.20/go.mod h1:W+V8PltTTMOvKvAeJH7IuucS94S2C6jfK/D7dTCTo3Y=
 github.com/mitchellh/mapstructure v1.5.0 h1:jeMsZIYE/09sWLaz43PL7Gy6RuMjD2eJVyuac5Z2hdY=
 github.com/mitchellh/mapstructure v1.5.0/go.mod h1:bFUtVrKA4DC2yAKiSyO/QUcy7e+RRV2QTWOzhPopBRo=
-github.com/nutanix-cloud-native/prism-go-client v0.5.2-0.20250327201106-73aeef0a6292 h1:Yr6JsqKLbjWAAqa0D5yZC+KYagAaV9rz6O+Qqjh3dFQ=
-github.com/nutanix-cloud-native/prism-go-client v0.5.2-0.20250327201106-73aeef0a6292/go.mod h1:qUOpU9d/ygvuEFBiots+tWY3Si/3SD6chOIRoVg07Q8=
+github.com/nutanix-cloud-native/prism-go-client v0.5.2-0.20250415200013-f6ab247eefb8 h1:P48sZWXk5VGujC3FsWEaTkzmj7Nbsn6EwHoQtXqEL14=
+github.com/nutanix-cloud-native/prism-go-client v0.5.2-0.20250415200013-f6ab247eefb8/go.mod h1:qUOpU9d/ygvuEFBiots+tWY3Si/3SD6chOIRoVg07Q8=
 github.com/nutanix/ntnx-api-golang-clients/clustermgmt-go-client/v4 v4.0.1-beta.2 h1:s1u5/GEw3mTZakepJoTD1OvPVU1YuioRxmKZin+W99s=
 github.com/nutanix/ntnx-api-golang-clients/clustermgmt-go-client/v4 v4.0.1-beta.2/go.mod h1:sd4Fnk6MVfEDVY+8WyRoQTmLhi2SgZ3riySWErVHf8E=
 github.com/nutanix/ntnx-api-golang-clients/networking-go-client/v4 v4.0.2-beta.1 h1:PvZQwYhhJtxmzLpnzEhHTpp2fV6woc6W65PHGsHzVfs=
