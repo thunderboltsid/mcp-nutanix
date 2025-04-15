@@ -68,6 +68,9 @@ func main() {
 	// Add the prompts
 	s.AddPrompt(prompts.SetCredentials(), prompts.SetCredentialsResponse())
 
+	// Add standalone tools
+	s.AddTool(tools.ApiNamespacesList(), tools.ApiNamespacesListHandler())
+
 	// Define all resources and tools
 	resourceRegistrations := map[string]ResourceRegistration{
 		"vm": {
