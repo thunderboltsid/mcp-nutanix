@@ -2,6 +2,7 @@ package client
 
 import (
 	"github.com/nutanix-cloud-native/prism-go-client/environment"
+	"github.com/nutanix-cloud-native/prism-go-client/environment/providers/local"
 	"github.com/nutanix-cloud-native/prism-go-client/environment/providers/mcp"
 	envtypes "github.com/nutanix-cloud-native/prism-go-client/environment/types"
 	prismclientv3 "github.com/nutanix-cloud-native/prism-go-client/v3"
@@ -15,7 +16,7 @@ var (
 
 func Init(modelcontextclient mcp.ModelContextClient) {
 	prismClient = &NutanixClient{
-		env:           environment.NewEnvironment(mcp.NewProvider(modelcontextclient)),
+		env:           environment.NewEnvironment(local.NewProvider(), mcp.NewProvider(modelcontextclient)),
 		v3ClientCache: prismclientv3.NewClientCache(),
 		v4ClientCache: prismclientv4.NewClientCache(),
 	}
