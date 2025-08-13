@@ -44,17 +44,68 @@ cd mcp-nutanix
 make build
 ```
 
-### Running
+## Credential Configuration
 
-```bash
-./bin/mcp-nutanix
+The server supports two credential methods:
+
+1. **Interactive credentials** (default) - Works with Claude via MCP prompts
+2. **Static credentials** - Required for tools like Cursor that don't support interactive prompts
+
+## MCP Client Configuration
+
+To use this server with MCP clients, you need to configure the client to connect to the server.
+
+### Claude Desktop/Code
+
+Create or update `~/.anthropic/claude_desktop.json`:
+
+```json
+{
+  "mcpServers": {
+    "nutanix": {
+      "command": "/path/to/mcp-nutanix/bin/mcp-nutanix"
+    }
+  }
+}
 ```
 
-The server will start and prompt for Prism Central credentials.
+Claude will prompt you for credentials when first using the server.
+
+### Cursor
+
+For Cursor, you need to provide static credentials via environment variables since it doesn't support interactive prompts.
+
+Create or update `~/.cursor/mcp.json`:
+
+```json
+{
+  "mcpServers": {
+    "nutanix": {
+      "command": "/path/to/mcp-nutanix/bin/mcp-nutanix",
+      "env": {
+        "NUTANIX_ENDPOINT": "your-prism-central-ip-or-hostname",
+        "NUTANIX_USERNAME": "your-username", 
+        "NUTANIX_PASSWORD": "your-password",
+        "NUTANIX_INSECURE": "true"
+      }
+    }
+  }
+}
+```
+
+**Environment Variables:**
+- `NUTANIX_ENDPOINT` - Prism Central IP or hostname (required)
+- `NUTANIX_USERNAME` - API username (required)
+- `NUTANIX_PASSWORD` - API password (required)
+- `NUTANIX_INSECURE` - Set to "true" for self-signed certificates (optional)
+
+### Other MCP Clients
+
+This server follows the standard MCP protocol and should work with any MCP client that supports stdio transport. Refer to your client's documentation for configuration instructions.
 
 ## Usage
 
-Once the MCP server is running and connected to your Prism Central instance, LLMs can interact with it through the MCP protocol.
+Once the MCP server is configured with your client and connected to your Prism Central instance, LLMs can interact with it through the MCP protocol.
 
 ### Resource Listing
 

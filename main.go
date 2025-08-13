@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/thunderboltsid/mcp-nutanix/internal/client"
 	"github.com/thunderboltsid/mcp-nutanix/pkg/prompts"
 	"github.com/thunderboltsid/mcp-nutanix/pkg/resources"
 	"github.com/thunderboltsid/mcp-nutanix/pkg/tools"
@@ -25,7 +26,24 @@ type ResourceRegistration struct {
 	ResourceHandler server.ResourceTemplateHandlerFunc
 }
 
+// initializeFromEnvIfAvailable initializes the Prism client only if environment variables are available
+func initializeFromEnvIfAvailable() {
+	endpoint := os.Getenv("NUTANIX_ENDPOINT")
+	username := os.Getenv("NUTANIX_USERNAME")
+	password := os.Getenv("NUTANIX_PASSWORD")
+
+	// Only initialize if all required environment variables are set
+	// This allows prompt-based initialization to work when env vars are not present
+	if endpoint != "" && username != "" && password != "" {
+		client.Init(client.PrismClientProvider)
+		fmt.Printf("Initialized Prism client from environment variables for endpoint: %s\n", endpoint)
+	}
+}
+
 func main() {
+	// Initialize the Prism client only if environment variables are available
+	initializeFromEnvIfAvailable()
+
 	// Define server hooks for logging and debugging
 	hooks := &server.Hooks{}
 	hooks.AddOnError(func(id any, method mcp.MCPMethod, message any, err error) {
