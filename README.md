@@ -63,7 +63,7 @@ Create or update `~/.anthropic/claude_desktop.json`:
 {
   "mcpServers": {
     "nutanix": {
-      "command": "/path/to/mcp-nutanix/bin/mcp-nutanix"
+      "command": "/path/to/mcp-nutanix"
     }
   }
 }
@@ -81,7 +81,7 @@ Create or update `~/.cursor/mcp.json`:
 {
   "mcpServers": {
     "nutanix": {
-      "command": "/path/to/mcp-nutanix/bin/mcp-nutanix",
+      "command": "/path/to/mcp-nutanix",
       "env": {
         "NUTANIX_ENDPOINT": "your-prism-central-ip-or-hostname",
         "NUTANIX_USERNAME": "your-username", 
