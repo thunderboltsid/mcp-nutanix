@@ -2,6 +2,7 @@ package tools
 
 import (
 	"context"
+	"reflect"
 
 	"github.com/thunderboltsid/mcp-nutanix/internal/client"
 	"github.com/thunderboltsid/mcp-nutanix/pkg/resources"
@@ -24,12 +25,49 @@ func HostList() mcp.Tool {
 func HostListHandler() server.ToolHandlerFunc {
 	return CreateListToolHandler(
 		resources.ResourceTypeHost,
-		// Define the ListResourceFunc implementation
 		func(ctx context.Context, client *client.NutanixClient, filter string) (interface{}, error) {
+			var allHosts []interface{}
+			page := 0
+			limit := 100
 
-			// Special case for Host which doesn't take a filter
-			return client.V3().ListAllHost(ctx)
+			for {
+				resp, err := client.V4().ClustersApiInstance.ListHosts(&page, &limit, nil, nil, nil, nil)
+				if err != nil {
+					return nil, err
+				}
 
+				if resp.Data != nil {
+					if dataValue := resp.Data.GetValue(); dataValue != nil {
+						v := reflect.ValueOf(dataValue)
+						if v.Kind() == reflect.Slice {
+							for i := 0; i < v.Len(); i++ {
+								allHosts = append(allHosts, v.Index(i).Interface())
+							}
+						}
+					}
+				}
+
+				if resp.Metadata != nil && resp.Metadata.Links != nil {
+					hasNext := false
+					for _, link := range resp.Metadata.Links {
+						if link.Rel != nil && *link.Rel == "next" {
+							hasNext = true
+							break
+						}
+					}
+					if !hasNext {
+						break
+					}
+					page++
+				} else {
+					break
+				}
+			}
+
+			return map[string]interface{}{
+				"hosts": allHosts,
+				"count": len(allHosts),
+			}, nil
 		},
 	)
 }
@@ -48,23 +86,47 @@ func HostCount() mcp.Tool {
 func HostCountHandler() server.ToolHandlerFunc {
 	return CreateCountToolHandler(
 		resources.ResourceTypeHost,
-		// Define the ListResourceFunc implementation
 		func(ctx context.Context, client *client.NutanixClient, filter string) (interface{}, error) {
+			totalCount := 0
+			page := 0
+			limit := 100
 
-			// Special case for Host which doesn't take a filter
-			resp, err := client.V3().ListAllHost(ctx)
+			for {
+				resp, err := client.V4().ClustersApiInstance.ListHosts(&page, &limit, nil, nil, nil, nil)
+				if err != nil {
+					return nil, err
+				}
 
-			if err != nil {
-				return nil, err
+				if resp.Data != nil {
+					if dataValue := resp.Data.GetValue(); dataValue != nil {
+						v := reflect.ValueOf(dataValue)
+						if v.Kind() == reflect.Slice {
+							totalCount += v.Len()
+						}
+					}
+				}
+
+				if resp.Metadata != nil && resp.Metadata.Links != nil {
+					hasNext := false
+					for _, link := range resp.Metadata.Links {
+						if link.Rel != nil && *link.Rel == "next" {
+							hasNext = true
+							break
+						}
+					}
+					if !hasNext {
+						break
+					}
+					page++
+				} else {
+					break
+				}
 			}
 
-			res := map[string]interface{}{
+			return map[string]interface{}{
 				"resource_type": "Host",
-				"count":         len(resp.Entities),
-				"metadata":      resp.Metadata,
-			}
-
-			return res, nil
+				"count":         totalCount,
+			}, nil
 		},
 	)
 }

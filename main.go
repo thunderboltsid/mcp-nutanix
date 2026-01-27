@@ -86,10 +86,8 @@ func main() {
 	// Add the prompts
 	s.AddPrompt(prompts.SetCredentials(), prompts.SetCredentialsResponse())
 
-	// Add standalone tools
-	s.AddTool(tools.ApiNamespacesList(), tools.ApiNamespacesListHandler())
-
 	// Define all resources and tools
+	// Note: Only v4 API supported resources are included
 	resourceRegistrations := map[string]ResourceRegistration{
 		"vm": {
 			Tools: []ToolRegistration{
@@ -161,6 +159,8 @@ func main() {
 			ResourceFunc:    resources.Subnet,
 			ResourceHandler: resources.SubnetHandler(),
 		},
+		// The following resources are not yet supported in v4 API and have been commented out:
+		/*
 		"project": {
 			Tools: []ToolRegistration{
 				{
@@ -357,6 +357,7 @@ func main() {
 			ResourceFunc:    resources.RecoveryPlanJob,
 			ResourceHandler: resources.RecoveryPlanJobHandler(),
 		},
+		*/
 	}
 
 	// Register all tools and resources

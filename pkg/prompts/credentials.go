@@ -45,8 +45,10 @@ func SetCredentialsResponse() server.PromptHandlerFunc {
 
 		client.Init(client.PrismClientProvider)
 
-		// Validate the credentials
-		pcInfo, err := client.GetPrismClient().V3().GetPrismCentral(ctx)
+		// Validate the credentials by trying to list clusters
+		page := 0
+		limit := 1
+		_, err := client.GetPrismClient().V4().ClustersApiInstance.ListClusters(&page, &limit, nil, nil, nil, nil, nil)
 		if err != nil {
 			return mcp.NewGetPromptResult(
 				"Failed to connect to Prism Central",
@@ -64,7 +66,7 @@ func SetCredentialsResponse() server.PromptHandlerFunc {
 			[]mcp.PromptMessage{
 				mcp.NewPromptMessage(
 					mcp.RoleAssistant,
-					mcp.NewTextContent(fmt.Sprintf("Successfully connected to Prism Central %s at %s. You can now use the tools to interact with your Nutanix environment.", pcInfo.Resources.ClusterUUID, endpoint)),
+					mcp.NewTextContent(fmt.Sprintf("Successfully connected to Prism Central at %s. You can now use the tools to interact with your Nutanix environment.", endpoint)),
 				),
 			},
 		), nil

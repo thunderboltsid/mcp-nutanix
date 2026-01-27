@@ -22,7 +22,7 @@ func Image() mcp.ResourceTemplate {
 // ImageHandler implements the handler for the Image resource
 func ImageHandler() server.ResourceTemplateHandlerFunc {
 	return CreateResourceHandler(ResourceTypeImage, func(ctx context.Context, client *client.NutanixClient, uuid string) (interface{}, error) {
-		// Get the Image
-		return client.V3().GetImage(ctx, uuid)
+		// Use v4 API to get Image by ID
+		return client.V4().ImagesApiInstance.GetImageById(&uuid)
 	})
 }

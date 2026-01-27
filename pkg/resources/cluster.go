@@ -22,7 +22,7 @@ func Cluster() mcp.ResourceTemplate {
 // ClusterHandler implements the handler for the Cluster resource
 func ClusterHandler() server.ResourceTemplateHandlerFunc {
 	return CreateResourceHandler(ResourceTypeCluster, func(ctx context.Context, client *client.NutanixClient, uuid string) (interface{}, error) {
-		// Get the Cluster
-		return client.V3().GetCluster(ctx, uuid)
+		// Use v4 API to get Cluster by ID
+		return client.V4().ClustersApiInstance.GetClusterById(&uuid, nil)
 	})
 }

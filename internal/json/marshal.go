@@ -11,13 +11,8 @@ import (
 // DefaultStripPaths is a list of default paths to strip from the JSON output.
 // These paths are used to remove unnecessary or sensitive information from the JSON response.
 // guest_customization on VMs is massive and could contain sensitive information.
-// spec and status are duplicative info and hence status can be removed.
-var DefaultStripPaths = []string{
-	"api_version",
-	"spec.resources.guest_customization",
-	"entities[].spec.resources.guest_customization",
-	"entities[].status.resources.guest_customization",
-}
+// v4 API returns data differently than v3, so we have simpler strip paths.
+var DefaultStripPaths = []string{}
 
 func stripProperties(data []byte, paths []string) ([]byte, error) {
 	var input interface{}

@@ -2,6 +2,7 @@ package tools
 
 import (
 	"context"
+	"reflect"
 
 	"github.com/thunderboltsid/mcp-nutanix/internal/client"
 	"github.com/thunderboltsid/mcp-nutanix/pkg/resources"
@@ -24,12 +25,49 @@ func ImageList() mcp.Tool {
 func ImageListHandler() server.ToolHandlerFunc {
 	return CreateListToolHandler(
 		resources.ResourceTypeImage,
-		// Define the ListResourceFunc implementation
 		func(ctx context.Context, client *client.NutanixClient, filter string) (interface{}, error) {
+			var allImages []interface{}
+			page := 0
+			limit := 100
 
-			// Use ListAll function to get all resources
-			return client.V3().ListAllImage(ctx, "")
+			for {
+				resp, err := client.V4().ImagesApiInstance.ListImages(&page, &limit, nil, nil, nil)
+				if err != nil {
+					return nil, err
+				}
 
+				if resp.Data != nil {
+					if dataValue := resp.Data.GetValue(); dataValue != nil {
+						v := reflect.ValueOf(dataValue)
+						if v.Kind() == reflect.Slice {
+							for i := 0; i < v.Len(); i++ {
+								allImages = append(allImages, v.Index(i).Interface())
+							}
+						}
+					}
+				}
+
+				if resp.Metadata != nil && resp.Metadata.Links != nil {
+					hasNext := false
+					for _, link := range resp.Metadata.Links {
+						if link.Rel != nil && *link.Rel == "next" {
+							hasNext = true
+							break
+						}
+					}
+					if !hasNext {
+						break
+					}
+					page++
+				} else {
+					break
+				}
+			}
+
+			return map[string]interface{}{
+				"images": allImages,
+				"count":  len(allImages),
+			}, nil
 		},
 	)
 }
@@ -48,23 +86,47 @@ func ImageCount() mcp.Tool {
 func ImageCountHandler() server.ToolHandlerFunc {
 	return CreateCountToolHandler(
 		resources.ResourceTypeImage,
-		// Define the ListResourceFunc implementation
 		func(ctx context.Context, client *client.NutanixClient, filter string) (interface{}, error) {
+			totalCount := 0
+			page := 0
+			limit := 100
 
-			// Use ListAll function to get all resources
-			resp, err := client.V3().ListAllImage(ctx, "")
+			for {
+				resp, err := client.V4().ImagesApiInstance.ListImages(&page, &limit, nil, nil, nil)
+				if err != nil {
+					return nil, err
+				}
 
-			if err != nil {
-				return nil, err
+				if resp.Data != nil {
+					if dataValue := resp.Data.GetValue(); dataValue != nil {
+						v := reflect.ValueOf(dataValue)
+						if v.Kind() == reflect.Slice {
+							totalCount += v.Len()
+						}
+					}
+				}
+
+				if resp.Metadata != nil && resp.Metadata.Links != nil {
+					hasNext := false
+					for _, link := range resp.Metadata.Links {
+						if link.Rel != nil && *link.Rel == "next" {
+							hasNext = true
+							break
+						}
+					}
+					if !hasNext {
+						break
+					}
+					page++
+				} else {
+					break
+				}
 			}
 
-			res := map[string]interface{}{
+			return map[string]interface{}{
 				"resource_type": "Image",
-				"count":         len(resp.Entities),
-				"metadata":      resp.Metadata,
-			}
-
-			return res, nil
+				"count":         totalCount,
+			}, nil
 		},
 	)
 }

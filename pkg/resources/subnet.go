@@ -22,7 +22,7 @@ func Subnet() mcp.ResourceTemplate {
 // SubnetHandler implements the handler for the Subnet resource
 func SubnetHandler() server.ResourceTemplateHandlerFunc {
 	return CreateResourceHandler(ResourceTypeSubnet, func(ctx context.Context, client *client.NutanixClient, uuid string) (interface{}, error) {
-		// Get the Subnet
-		return client.V3().GetSubnet(ctx, uuid)
+		// Use v4 API to get Subnet by ID
+		return client.V4().SubnetsApiInstance.GetSubnetById(&uuid)
 	})
 }

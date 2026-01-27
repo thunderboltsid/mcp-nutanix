@@ -2,6 +2,7 @@ package resources
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/thunderboltsid/mcp-nutanix/internal/client"
 
@@ -20,9 +21,13 @@ func Host() mcp.ResourceTemplate {
 }
 
 // HostHandler implements the handler for the Host resource
+// Note: V4 API requires both cluster ID and host ID to get a host.
+// Since the resource URI only provides the host UUID, we cannot directly call GetHostById.
+// This handler returns an error advising users to use the host_list tool instead.
 func HostHandler() server.ResourceTemplateHandlerFunc {
 	return CreateResourceHandler(ResourceTypeHost, func(ctx context.Context, client *client.NutanixClient, uuid string) (interface{}, error) {
-		// Get the Host
-		return client.V3().GetHost(ctx, uuid)
+		// V4 API GetHostById requires both clusterExtId and extId
+		// We don't have cluster ID from the resource URI
+		return nil, fmt.Errorf("host resource access by ID is not supported in v4 API (requires cluster ID). Please use the host_list tool to find host information")
 	})
 }
