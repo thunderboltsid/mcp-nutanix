@@ -5,6 +5,7 @@ import (
 	"github.com/nutanix-cloud-native/prism-go-client/environment/providers/local"
 	"github.com/nutanix-cloud-native/prism-go-client/environment/providers/mcp"
 	envtypes "github.com/nutanix-cloud-native/prism-go-client/environment/types"
+	convergedv4 "github.com/nutanix-cloud-native/prism-go-client/converged/v4"
 	prismclientv4 "github.com/nutanix-cloud-native/prism-go-client/v4"
 	"k8s.io/klog"
 )
@@ -15,8 +16,9 @@ var (
 
 func Init(modelcontextclient mcp.ModelContextClient) {
 	prismClient = &NutanixClient{
-		env:           environment.NewEnvironment(local.NewProvider(), mcp.NewProvider(modelcontextclient)),
-		v4ClientCache: prismclientv4.NewClientCache(),
+		env:                  environment.NewEnvironment(local.NewProvider(), mcp.NewProvider(modelcontextclient)),
+		v4ClientCache:        prismclientv4.NewClientCache(),
+		convergedClientCache: convergedv4.NewClientCache(),
 	}
 }
 
@@ -29,13 +31,24 @@ func GetPrismClient() *NutanixClient {
 }
 
 type NutanixClient struct {
-	env           envtypes.Environment
-	v4ClientCache *prismclientv4.ClientCache
+	env                  envtypes.Environment
+	v4ClientCache        *prismclientv4.ClientCache
+	convergedClientCache *convergedv4.ClientCache
 }
 
-// V4 returns the v4 converged client
+// V4 returns the v4 raw client
 func (n *NutanixClient) V4() *prismclientv4.Client {
 	c, err := n.v4ClientCache.GetOrCreate(n)
+	if err != nil {
+		panic(err)
+	}
+
+	return c
+}
+
+// Converged returns the v4 converged client
+func (n *NutanixClient) Converged() *convergedv4.Client {
+	c, err := n.convergedClientCache.GetOrCreate(n)
 	if err != nil {
 		panic(err)
 	}

@@ -22,7 +22,7 @@ func VM() mcp.ResourceTemplate {
 // VMHandler implements the handler for the VM resource
 func VMHandler() server.ResourceTemplateHandlerFunc {
 	return CreateResourceHandler(ResourceTypeVM, func(ctx context.Context, client *client.NutanixClient, uuid string) (interface{}, error) {
-		// Use v4 API to get VM by ID
-		return client.V4().VmApiInstance.GetVmById(&uuid)
+		// Use converged API to get VM by ID
+		return client.Converged().VMs.Get(ctx, uuid)
 	})
 }

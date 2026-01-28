@@ -2,7 +2,6 @@ package tools
 
 import (
 	"context"
-	"reflect"
 
 	"github.com/thunderboltsid/mcp-nutanix/internal/client"
 	"github.com/thunderboltsid/mcp-nutanix/pkg/resources"
@@ -26,47 +25,14 @@ func ClusterListHandler() server.ToolHandlerFunc {
 	return CreateListToolHandler(
 		resources.ResourceTypeCluster,
 		func(ctx context.Context, client *client.NutanixClient, filter string) (interface{}, error) {
-			var allClusters []interface{}
-			page := 0
-			limit := 100
-
-			for {
-				resp, err := client.V4().ClustersApiInstance.ListClusters(&page, &limit, nil, nil, nil, nil, nil)
-				if err != nil {
-					return nil, err
-				}
-
-				if resp.Data != nil {
-					if dataValue := resp.Data.GetValue(); dataValue != nil {
-						v := reflect.ValueOf(dataValue)
-						if v.Kind() == reflect.Slice {
-							for i := 0; i < v.Len(); i++ {
-								allClusters = append(allClusters, v.Index(i).Interface())
-							}
-						}
-					}
-				}
-
-				if resp.Metadata != nil && resp.Metadata.Links != nil {
-					hasNext := false
-					for _, link := range resp.Metadata.Links {
-						if link.Rel != nil && *link.Rel == "next" {
-							hasNext = true
-							break
-						}
-					}
-					if !hasNext {
-						break
-					}
-					page++
-				} else {
-					break
-				}
+			clusters, err := client.Converged().Clusters.List(ctx)
+			if err != nil {
+				return nil, err
 			}
 
 			return map[string]interface{}{
-				"clusters": allClusters,
-				"count":    len(allClusters),
+				"clusters": clusters,
+				"count":    len(clusters),
 			}, nil
 		},
 	)
@@ -87,45 +53,14 @@ func ClusterCountHandler() server.ToolHandlerFunc {
 	return CreateCountToolHandler(
 		resources.ResourceTypeCluster,
 		func(ctx context.Context, client *client.NutanixClient, filter string) (interface{}, error) {
-			totalCount := 0
-			page := 0
-			limit := 100
-
-			for {
-				resp, err := client.V4().ClustersApiInstance.ListClusters(&page, &limit, nil, nil, nil, nil, nil)
-				if err != nil {
-					return nil, err
-				}
-
-				if resp.Data != nil {
-					if dataValue := resp.Data.GetValue(); dataValue != nil {
-						v := reflect.ValueOf(dataValue)
-						if v.Kind() == reflect.Slice {
-							totalCount += v.Len()
-						}
-					}
-				}
-
-				if resp.Metadata != nil && resp.Metadata.Links != nil {
-					hasNext := false
-					for _, link := range resp.Metadata.Links {
-						if link.Rel != nil && *link.Rel == "next" {
-							hasNext = true
-							break
-						}
-					}
-					if !hasNext {
-						break
-					}
-					page++
-				} else {
-					break
-				}
+			clusters, err := client.Converged().Clusters.List(ctx)
+			if err != nil {
+				return nil, err
 			}
 
 			return map[string]interface{}{
 				"resource_type": "Cluster",
-				"count":         totalCount,
+				"count":         len(clusters),
 			}, nil
 		},
 	)
