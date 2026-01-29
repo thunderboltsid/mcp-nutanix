@@ -35,7 +35,6 @@ const (
 	ResourceTypeRecoveryPlan        ResourceType = "recoveryplan"
 	ResourceTypeRecoveryPlanJob     ResourceType = "recoveryplanjob"
 	ResourceTypeCategory            ResourceType = "category"
-	ResourceTypeCategoryValue       ResourceType = "categoryvalue"
 	ResourceTypeAvailabilityZone    ResourceType = "availabilityzone"
 )
 

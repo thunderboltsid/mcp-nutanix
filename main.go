@@ -159,6 +159,20 @@ func main() {
 			ResourceFunc:    resources.Subnet,
 			ResourceHandler: resources.SubnetHandler(),
 		},
+		"category": {
+			Tools: []ToolRegistration{
+				{
+					Func:    tools.CategoryList,
+					Handler: tools.CategoryListHandler(),
+				},
+				{
+					Func:    tools.CategoryCount,
+					Handler: tools.CategoryCountHandler(),
+				},
+			},
+			ResourceFunc:    resources.Category,
+			ResourceHandler: resources.CategoryHandler(),
+		},
 		// The following resources are not yet supported in v4 API and have been commented out:
 		/*
 		"project": {
@@ -202,20 +216,6 @@ func main() {
 			},
 			ResourceFunc:    resources.NetworkSecurityRule,
 			ResourceHandler: resources.NetworkSecurityRuleHandler(),
-		},
-		"category": {
-			Tools: []ToolRegistration{
-				{
-					Func:    tools.CategoryList,
-					Handler: tools.CategoryListHandler(),
-				},
-				{
-					Func:    tools.CategoryCount,
-					Handler: tools.CategoryCountHandler(),
-				},
-			},
-			ResourceFunc:    resources.Category,
-			ResourceHandler: resources.CategoryHandler(),
 		},
 		"accesscontrolpolicy": {
 			Tools: []ToolRegistration{
