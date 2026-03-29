@@ -15,6 +15,10 @@ This project was created as a personal project to explore the capabilities of th
 
 **USE AT YOUR OWN RISK**: The author takes no responsibility for any issues, damages, or outages that may result from using this code.
 
+## Hosted deployment
+
+A hosted deployment is available on [Fronteir AI](https://fronteir.ai/mcp/thunderboltsid-mcp-nutanix).
+
 ## Overview
 
 This MCP server allows LLMs to interact with Nutanix Prism Central by:
